@@ -14,16 +14,16 @@ const FoodCard = ({ image, name, price, description }) => {
   };
 
   return (
-    <div className="bg-white p-2 rounded-lg shadow-md w-full">
-      <img src={image} alt={name} className=" w-full h-full object-cover rounded-md" />
-      <h2 className="text-[0.8rem] font-semibold mt-2">{name}</h2>
-      <p className="text-gray-500 text-[0.5rem]">{description}</p>
-      <div className="text-[0.8rem] font-bold mt-2">{price} so‘m</div>
+    <div className="bg-gray-50 p-2 rounded-lg shadow-md w-full">
+      <img src={image} alt={name} className=" w-full h-full object-cover rounded-md mix-blend-multiply" />
+      <h2 className="text-[1.2rem] font-semibold mt-2">{name}</h2>
+      <p className="text-gray-500 text-[0.8rem]">{description}</p>
+      <div className="text-[1rem] font-bold mt-2">{price} so‘m</div>
 
       {quantity === 0 ? (
         <button
           onClick={handleIncrement}
-          className="mt-4 w-full bg-[var(--main-color)] text-white text-[0.8rem] py-2 rounded-md"
+          className="mt-4 w-full bg-[var(--main-color)] text-white text-[1rem] py-2 rounded-md"
         >
           + Add
         </button>
@@ -35,7 +35,7 @@ const FoodCard = ({ image, name, price, description }) => {
           >
             -
           </button>
-          <span className="text-[0.8rem] font-semibold">{quantity}</span>
+          <span className="text-[1rem] font-semibold">{quantity}</span>
           <button
             onClick={handleIncrement}
             className=" text-[var(--white-color)]   flex items-center justify-center"
