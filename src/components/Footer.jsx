@@ -23,7 +23,7 @@ const Footer = () => {
         </Link>
         <Link 
           to="/receipt" 
-          className={`flex flex-col items-center ${location.pathname === "/receipt" ? "text-[#8D7BFE]" : "text-[#95919f]"}`}
+          className={`flex flex-col items-center ${location.pathname === "/receipt" ? "text-[var(--main-color)]" : "text-[var(--grey-color)]"}`}
         >
           <List size={24} className="active:scale-110 transition-transform"/>
           <span className="text-sm">Orders</span>

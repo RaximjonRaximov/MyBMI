@@ -17,7 +17,7 @@ const Filter = ({ onFilterChange, selectedFilter, foodItems }) => {
   const filters = [allFilter, ...types.map((type) => ({ type, image: getFirstImage(type) }))];
 
   return (
-    <div className="flex  justify-start gap-4 p-4 overflow-x-auto whitespace-nowrap bg-transparent">
+    <div className=" flex  justify-start gap-4 p-4 overflow-x-auto whitespace-nowrap bg-transparent">
       {filters.map((filter) => (
         <button
           key={filter.type}

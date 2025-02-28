@@ -18,7 +18,7 @@ const Menu = ({ selectedFilter, foodItems }) => {
   }, {});
 
   return (
-    <div className="max-w-[20rem] w-full flex flex-col items-center  mx-auto">
+    <div className="max-w-[20rem] w-[20rem] flex flex-col items-center  mx-auto pb-8">
       <h1 className="text-2xl font-bold mb-4">Menu</h1>
 
       {/* Har bir tur uchun alohida bo'lim */}
@@ -29,9 +29,7 @@ const Menu = ({ selectedFilter, foodItems }) => {
           </div>
           <div className="grid grid-cols-2 gap-3 justify-center">
             {groupedItems[type].map((item) => (
-              <div className="h-full flex justify-center">
               <FoodCard key={item.id} {...item} />
-              </div>
             ))}
           </div>
         </div>
