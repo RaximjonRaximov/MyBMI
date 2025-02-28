@@ -14,8 +14,8 @@ const FoodCard = ({ image, name, price, description }) => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md max-w-50">
-      <img src={image} alt={name} className=" w-full h-20 object-cover rounded-md" />
+    <div className="bg-white p-4 rounded-lg shadow-md max-w-[300rem]">
+      <img src={image} alt={name} className=" w-full h-40 object-cover rounded-md" />
       <h2 className="text-[0.8rem] font-semibold mt-2">{name}</h2>
       <p className="text-gray-500 text-[0.5rem]">{description}</p>
       <div className="text-[0.8rem] font-bold mt-2">{price} so‘m</div>
