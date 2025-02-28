@@ -1,4 +1,3 @@
-// redux/slices/cartSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -20,7 +19,8 @@ const cartSlice = createSlice({
         state.items.push({ ...item, quantity: 1 });
       }
       state.totalPrice += item.price;
-      state.finalPrice = state.totalPrice * 1.1; // 10% xizmat haqqi qo'shildi
+      state.totalPrice = parseFloat(state.totalPrice.toFixed(0));
+      state.finalPrice = parseFloat((state.totalPrice * 1.1).toFixed(0)); // 10% xizmat haqqi qo'shildi
     },
     removeFromCart: (state, action) => {
       const itemId = action.payload;
@@ -34,7 +34,8 @@ const cartSlice = createSlice({
           state.items = state.items.filter((i) => i.id !== itemId);
         }
       }
-      state.finalPrice = state.totalPrice * 1.1; // 10% xizmat haqqi qayta hisoblandi
+      state.totalPrice = parseFloat(state.totalPrice.toFixed(0));
+      state.finalPrice = parseFloat((state.totalPrice * 1.1).toFixed(0)); // 10% xizmat haqqi qayta hisoblandi
     }
   },
 });

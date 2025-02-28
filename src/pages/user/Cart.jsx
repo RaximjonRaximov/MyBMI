@@ -4,6 +4,7 @@ import { addToCart, removeFromCart } from "../../redux/slices/cartSlice";
 const Cart = () => {
   const dispatch = useDispatch();
   const { items, totalPrice, finalPrice } = useSelector((state) => state.cart);
+  const serviceFee = parseFloat((totalPrice * 0.1).toFixed(0));
 
   return (
     <div className="p-4">
@@ -33,7 +34,8 @@ const Cart = () => {
 
       <div className="mt-4">
         <p><strong>Umumiy narx:</strong> {totalPrice} so‘m</p>
-        <p><strong>+ 10% xizmat haqqi:</strong> {finalPrice} so‘m</p>
+        <p><strong>+ 10% xizmat haqqi:</strong> {serviceFee} so‘m</p>
+        <p><strong>Yakuniy narx:</strong> {finalPrice} so‘m</p>
       </div>
     </div>
   );
