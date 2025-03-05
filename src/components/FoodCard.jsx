@@ -23,7 +23,7 @@ const FoodCard = ({ image, name, price, description, id }) => {
 
       {quantity === 0 ? (
         <button
-          onClick={() => dispatch(addToCart({ id, name, price, image }))}
+          onClick={() => dispatch(addToCart({ id, name, price, image ,description }))}
           className="mt-4 w-full bg-[var(--main-color)] text-white text-[1rem] py-2 rounded-md"
         >
           + Add
@@ -38,7 +38,7 @@ const FoodCard = ({ image, name, price, description, id }) => {
           </button>
           <span className="text-[1rem] font-semibold">{quantity}</span>
           <button
-            onClick={() => dispatch(addToCart({ id, name, price, image }))}
+            onClick={() => dispatch(addToCart({ id, name, price, image ,description }))}
             className="text-[var(--white-color)] flex items-center justify-center"
           >
             +

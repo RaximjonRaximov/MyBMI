@@ -18,7 +18,7 @@ const Menu = ({ selectedFilter, foodItems }) => {
   }, {});
 
   return (
-    <div className="max-w-[20rem] w-[20rem] flex flex-col items-center  mx-auto pb-8">
+    <div className="max-w-[20rem] w-[20rem] flex flex-col items-center  mx-auto pb-[5rem]">
       <h1 className="text-2xl font-bold mb-4">Menu</h1>
 
       {/* Har bir tur uchun alohida bo'lim */}

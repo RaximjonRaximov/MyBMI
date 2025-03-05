@@ -13,6 +13,7 @@
     "@reduxjs/toolkit": "^2.6.0",
     "@tailwindcss/vite": "^4.0.8",
     "axios": "^1.8.1",
+    "framer-motion": "^12.4.7",
     "lucide-react": "^0.476.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
