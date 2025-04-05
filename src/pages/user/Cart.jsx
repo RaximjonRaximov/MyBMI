@@ -1,5 +1,6 @@
+// src/pages/user/Cart.jsx
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, removeFromCart, removeItemCompletely } from "../../redux/slices/cartSlice";
+import { addToCart, removeFromCart, removeItemCompletely } from "../../redux/cartSlice";
 import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
@@ -34,11 +35,11 @@ const Cart = () => {
                       <dl className="mt-0.5 space-y-px text-[10px] text-gray-600">
                         <div>
                           <dt className="inline">Narx:</dt>
-                          <dd className="inline">{item.price} so‘m</dd>
+                          <dd className="inline">{item.price.toLocaleString()} so‘m</dd>
                         </div>
                         <div>
                           <dt className="inline"></dt>
-                          <dd className="inline">{item.description}</dd>
+                          <dd className="inline">{item.description || "No description"}</dd>
                         </div>
                       </dl>
                     </div>
@@ -91,24 +92,24 @@ const Cart = () => {
                 <dl className="space-y-0.5 text-sm text-gray-700">
                   <div className="flex justify-between">
                     <dt>Umumiy narx</dt>
-                    <dd>{totalPrice} so‘m</dd>
+                    <dd>{totalPrice.toLocaleString()} so‘m</dd>
                   </div>
 
                   <div className="flex justify-between">
                     <dt>Xizmat haqqi 10%</dt>
-                    <dd>{serviceFee} so‘m</dd>
+                    <dd>{serviceFee.toLocaleString()} so‘m</dd>
                   </div>
 
                   <div className="flex justify-between !text-base font-medium">
                     <dt>Yakuniy narx</dt>
-                    <dd>{finalPrice} so‘m</dd>
+                    <dd>{finalPrice.toLocaleString()} so‘m</dd>
                   </div>
                 </dl>
 
                 <div className="flex justify-end">
                   <a
                     href="#"
-                    onClick={()=>{navigate('/checkout')}}
+                    onClick={() => navigate("/checkout")}
                     className="block rounded-sm bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
                   >
                     Buyurtma berish

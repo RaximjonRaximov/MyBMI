@@ -1,3 +1,4 @@
+// src/components/OrderButton.jsx
 import React from "react";
 import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -10,12 +11,11 @@ const OrderButton = () => {
 
   return (
     <AnimatePresence>
-      {/* totalCount 0 bo'lsa ham animatsiya bilan yo'qoladi */}
-      {location.pathname==="/" && totalCount > 0 && (
+      {location.pathname === "/" && totalCount > 0 && (
         <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }} // Yo'qolish animatsiyasi
+          exit={{ y: 100, opacity: 0 }}
           transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
           className="fixed bottom-[5rem] left-0 right-0 flex justify-center"
         >

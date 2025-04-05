@@ -1,23 +1,30 @@
+// src/components/Filter.jsx
 import React from "react";
 
-const Filter = ({ onFilterChange, selectedFilter, foodItems }) => {
-  // Mavjud typelarni olish
-  const types = [...new Set(foodItems.map((item) => item.type))];
+const Filter = ({ onFilterChange, selectedFilter, products }) => {
+  // Get unique types from products
+  const types = [...new Set(products.map((item) => item.type.name))];
 
-  // Har bir turning birinchi elementining rasmini olish
-  const getFirstImage = (type) => {
-    const firstItem = foodItems.find((item) => item.type === type);
-    return firstItem ? firstItem.image : null;
+  // Get the first product's image for each type
+  const getFirstImage = (typeName) => {
+    const product = products.find((item) => item.type.name === typeName);
+    return product ? product.image : null;
   };
 
-  // Barcha mahsulotlar uchun filter
+  // "All Products" filter
   const allFilter = { type: "Barcha mahsulotlar", icon: "🍽️" };
 
-  // Barcha filtrlarni birlashtiramiz
-  const filters = [allFilter, ...types.map((type) => ({ type, image: getFirstImage(type) }))];
+  // Combine all filters
+  const filters = [
+    allFilter,
+    ...types.map((type) => ({
+      type,
+      image: getFirstImage(type),
+    })),
+  ];
 
   return (
-    <div className=" flex  justify-start gap-4 p-4 overflow-x-auto whitespace-nowrap bg-transparent">
+    <div className="flex justify-start gap-4 p-4 overflow-x-auto whitespace-nowrap bg-transparent">
       {filters.map((filter) => (
         <button
           key={filter.type}

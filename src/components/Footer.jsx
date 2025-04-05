@@ -1,3 +1,4 @@
+// src/components/Footer.jsx
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingCart, List, UtensilsCrossed } from "lucide-react";
 import { useSelector } from "react-redux";
@@ -10,7 +11,6 @@ const Footer = () => {
 
   return (
     <div>
-      {/* OrderButton animatsiya bilan yo'qolishi uchun AnimatePresence ichida */}
       <AnimatePresence>
         <OrderButton />
       </AnimatePresence>
