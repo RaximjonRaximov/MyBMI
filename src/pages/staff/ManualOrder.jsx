@@ -2,31 +2,64 @@ import React, { useState, useEffect } from "react";
 import axios from "../../api/axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart, removeItemCompletely } from "../../redux/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 const ManualOrder = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { items, totalPrice, finalPrice } = useSelector((state) => state.cart);
   const [products, setProducts] = useState([]);
+  const [productTypes, setProductTypes] = useState([]);
+  const [filterTypeId, setFilterTypeId] = useState("");
   const [tableNumber, setTableNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  // Fetch products on component mount
+  // Fetch products and product types on component mount
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setError("Please log in to access this page.");
+      // Optionally redirect to login page
+      // navigate("/login");
+      return;
+    }
+
     const fetchProducts = async () => {
       setLoading(true);
       try {
         const response = await axios.get("/products/");
         setProducts(response.data);
       } catch (err) {
-        setError("Failed to fetch products.");
+        const errorMessage = err.response?.status === 403
+          ? "Access to products denied. Please check your permissions."
+          : `Failed to fetch products: ${err.response?.data?.detail || err.message}`;
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
+
+    const fetchProductTypes = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("/product-types/");
+        setProductTypes(response.data);
+      } catch (err) {
+        const errorMessage = err.response?.status === 403
+          ? "Access to product types denied. Please ensure you have the necessary permissions."
+          : `Failed to fetch product types: ${err.response?.data?.detail || err.message}`;
+        setError(errorMessage);
+        console.error("Product types fetch error:", err.response || err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProducts();
-  }, []);
+    fetchProductTypes();
+  }, [navigate]);
 
   // Format price for display
   const formatPrice = (price) => {
@@ -37,18 +70,17 @@ const ManualOrder = () => {
 
   // Handle adding product to cart
   const handleAddToOrder = (product) => {
-    // Format the product data to match what cartSlice expects
     const formattedProduct = {
       id: product.id,
       name: product.name,
-      price: Number(product.price) || 0, // Ensure price is a number
+      price: Number(product.price) || 0,
       image: product.image || "https://via.placeholder.com/100",
       description: product.description || "No description",
     };
     dispatch(addToCart(formattedProduct));
   };
 
-  // Handle order submission using axios
+  // Handle order submission
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (!tableNumber || items.length === 0) {
@@ -56,37 +88,39 @@ const ManualOrder = () => {
       return;
     }
 
-    // Prepare the order payload to match the API's expected format
     const orderData = {
       table_number: Number(tableNumber),
       status_id: 1,
       orderitems: items.map((item) => ({
-        product_id: Number(item.id), // Ensure product_id is a number
-        quantity: Number(item.quantity), // Ensure quantity is a number
+        product_id: Number(item.id),
+        quantity: Number(item.quantity),
       })),
     };
 
-    console.log("Order payload being sent:", orderData); // Debug the payload
-
     try {
-      const response = await axios.post("/orders/", orderData);
-      console.log("Order response:", response.data); // Debug the response
+      await axios.post("/orders/", orderData);
       setSuccessMessage("Order placed successfully!");
       setTableNumber("");
-      items.forEach((item) => dispatch(removeItemCompletely(item.id))); // Clear cart after order
+      items.forEach((item) => dispatch(removeItemCompletely(item.id)));
     } catch (err) {
-      console.error("Order error:", err.response?.data || err.message); // Debug the error
-      setError("Failed to place order: " + (err.response?.data?.detail || err.message));
+      const errorMessage = err.response?.status === 403
+        ? "Access to place order denied. Please check your permissions."
+        : `Failed to place order: ${err.response?.data?.detail || err.message}`;
+      setError(errorMessage);
     }
   };
 
+  // Filter products based on selected type
+  const filteredProducts = filterTypeId
+    ? products.filter((product) => product.type.id === Number(filterTypeId))
+    : products;
+
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-gray-100 to-gray-100 min-h-screen">
       <h1 className="text-3xl font-extrabold text-gray-900 mb-8 text-center tracking-tight">
         Manual Order
       </h1>
 
-      {/* Success/Error Messages */}
       {successMessage && (
         <div className="mb-4 p-3 bg-green-100 text-green-800 rounded-lg shadow-md text-center text-sm font-medium">
           {successMessage}
@@ -101,6 +135,23 @@ const ManualOrder = () => {
       {/* Product Selection Section */}
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
         <h2 className="text-xl font-semibold text-gray-800 mb-4">Select Products</h2>
+
+        {/* Filter by Type */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Type</label>
+          <select
+            value={filterTypeId}
+            onChange={(e) => setFilterTypeId(e.target.value)}
+            className="w-full md:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 text-sm"
+            disabled={productTypes.length === 0}
+          >
+            <option value="">All Types</option>
+            {productTypes.map((type) => (
+              <option key={type.id} value={type.id}>{type.name}</option>
+            ))}
+          </select>
+        </div>
+
         {loading ? (
           <div className="text-center text-gray-600">Loading products...</div>
         ) : (
@@ -116,7 +167,7 @@ const ManualOrder = () => {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product) => (
+                {filteredProducts.map((product) => (
                   <tr key={product.id} className="border-t hover:bg-gray-50 transition-colors">
                     <td className="py-3 px-4">{product.id}</td>
                     <td className="py-3 px-4">{product.name}</td>
@@ -244,7 +295,9 @@ const ManualOrder = () => {
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-200 text-sm font-medium"
+            disabled={items.length === 0}
+            className={`px-4 py-2 text-white rounded-lg transition-all duration-200 text-sm font-medium ${items.length === 0 ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+              }`}
           >
             Place Order
           </button>

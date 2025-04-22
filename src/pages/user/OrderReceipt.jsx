@@ -101,7 +101,7 @@ const OrderReceipt = () => {
 
   return (
     <div className="max-w-md mx-auto p-4 bg-[var(--main-color)]/20 rounded-xl min-h-screen flex flex-col justify-center">
-      <h1 className="text-2xl font-bold text-green-600 mb-6 text-center">
+      <h1 className="text-2xl font-bold text-[var(--main-color)] mb-6 text-center">
         Buyurtmalaringiz {tableNumber ? `(Stol ${tableNumber})` : ""}
       </h1>
 

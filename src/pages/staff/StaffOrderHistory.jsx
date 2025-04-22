@@ -6,23 +6,39 @@ const StaffOrderHistory = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get("/orders/");
+      const historyOrders = response.data.filter(
+        (order) => order.status.id === 3
+      );
+      setOrders(historyOrders);
+    } catch (err) {
+      setError("Failed to fetch orders.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchOrders = async () => {
+    fetchOrders();
+  }, []);
+
+  const handleDeleteAllOrders = async () => {
+    if (window.confirm("Are you sure you want to delete all orders?")) {
       setLoading(true);
       try {
-        const response = await axios.get("/orders/");
-        const historyOrders = response.data.filter(
-          (order) => order.status.id === 3
-        );
-        setOrders(historyOrders);
+        await axios.post("/all/delete-orders/");
+        setOrders([]); // Clear the orders list
+        alert("All orders deleted successfully.");
       } catch (err) {
-        setError("Failed to fetch orders.");
+        setError("Failed to delete orders.");
       } finally {
         setLoading(false);
       }
-    };
-    fetchOrders();
-  }, []);
+    }
+  };
 
   const calculateOrderSummary = (order) => {
     const totalPrice = order.total_price || 0;
@@ -53,10 +69,23 @@ const StaffOrderHistory = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
-      <h1 className="text-3xl font-extrabold text-gray-900 mb-8 text-center tracking-tight">
-        Staff Order History
-      </h1>
+    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-gray-100 to-gray-100 min-h-screen">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-extrabold text-gray-900 text-center tracking-tight">
+          Staff Order History
+        </h1>
+        <button
+          onClick={handleDeleteAllOrders}
+          disabled={loading || orders.length === 0}
+          className={`px-4 py-2 rounded-lg text-white font-medium ${
+            loading || orders.length === 0
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-red-600 hover:bg-red-700"
+          }`}
+        >
+          Delete All Orders
+        </button>
+      </div>
 
       {error && (
         <div className="mb-4 p-3 bg-red-100 text-red-800 rounded-lg shadow-md text-sm font-medium">
@@ -76,7 +105,7 @@ const StaffOrderHistory = () => {
             return (
               <div
                 key={order.id}
-                className="bg-white rounded-xl shadow-lg p-6 w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-1.5rem)]"
+                className="bg-white rounded-xl shadow-lg p-6 w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-1.5rem)] flex flex-col flex-between"
               >
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
                   Order #{order.id} - Table {order.table_number}
@@ -86,11 +115,6 @@ const StaffOrderHistory = () => {
                   <div className="space-y-2">
                     {order.orderitems.map((item) => (
                       <div key={item.id} className="flex items-center gap-4">
-                        <img
-                          src={item.product.image || "https://via.placeholder.com/100"}
-                          alt={item.product.name}
-                          className="size-16 rounded-sm object-cover"
-                        />
                         <div className="flex-1">
                           <div className="flex justify-between text-gray-800">
                             <span>

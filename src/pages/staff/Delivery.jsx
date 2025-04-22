@@ -3,26 +3,31 @@ import axios from "../../api/axios";
 
 const Delivery = () => {
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get("/orders/");
+      const deliveryOrders = response.data.filter(
+        (order) => order.status.id === 2
+      );
+      setOrders(deliveryOrders);
+      setError(null); // Clear any previous errors on successful fetch
+    } catch (err) {
+      setError("Failed to fetch orders.");
+    }
+  };
+
   useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("/orders/");
-        const deliveryOrders = response.data.filter(
-          (order) => order.status.id === 2
-        );
-        setOrders(deliveryOrders);
-      } catch (err) {
-        setError("Failed to fetch orders.");
-      } finally {
-        setLoading(false);
-      }
-    };
+    // Initial fetch
     fetchOrders();
+
+    // Set up polling every second
+    const intervalId = setInterval(fetchOrders, 1000);
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const calculateOrderSummary = (order) => {
@@ -81,7 +86,7 @@ const Delivery = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-gray-100 to-gray-100 min-h-screen">
       <h1 className="text-3xl font-extrabold text-gray-900 mb-8 text-center tracking-tight">
         Delivery Orders
       </h1>
@@ -98,9 +103,7 @@ const Delivery = () => {
         </div>
       )}
 
-      {loading ? (
-        <div className="text-center text-gray-600">Loading orders...</div>
-      ) : orders.length === 0 ? (
+      {orders.length === 0 ? (
         <div className="text-center text-gray-600">No orders in delivery.</div>
       ) : (
         <div className="flex flex-wrap gap-6">
@@ -110,7 +113,7 @@ const Delivery = () => {
             return (
               <div
                 key={order.id}
-                className="bg-white rounded-xl shadow-lg p-6 w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-1.5rem)]"
+                className="bg-white rounded-xl shadow-lg p-6 w-full sm:w-[calc(50%-1.5rem)] lg:w-[calc(33.33%-1.5rem)] flex flex-col justify-between"
               >
                 <h2 className="text-xl font-semibold text-gray-800 mb-4">
                   Order #{order.id} - Table {order.table_number}
@@ -120,11 +123,6 @@ const Delivery = () => {
                   <div className="space-y-2">
                     {order.orderitems.map((item) => (
                       <div key={item.id} className="flex items-center gap-4">
-                        <img
-                          src={item.product.image || "https://via.placeholder.com/100"}
-                          alt={item.product.name}
-                          className="size-16 rounded-sm object-cover"
-                        />
                         <div className="flex-1">
                           <div className="flex justify-between text-gray-800">
                             <span>

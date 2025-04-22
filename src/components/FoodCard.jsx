@@ -1,22 +1,26 @@
-// src/components/FoodCard.jsx
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart, removeFromCart } from "../redux/cartSlice";
 
 const FoodCard = ({ image, name, price, description, id, type }) => {
   const dispatch = useDispatch();
+  const [imgError, setImgError] = useState(false); // State to track image loading errors
 
   // Get the quantity of this item in the cart
   const quantity = useSelector((state) =>
     state.cart.items.find((item) => item.id === id)?.quantity || 0
   );
 
+  // Default image path (absolute path from public folder)
+  const defaultImage = "/food.png";
+
   return (
-    <div className="bg-gray-50 p-2 rounded-lg shadow-md h-full max-w-[15rem]">
+    <div className="bg-gray-50 p-2 rounded-lg shadow-md h-full max-w-[15rem] flex flex-col justify-between items-start">
       <img
-        src={image || "https://via.placeholder.com/100"}
+        src={imgError || !image ? defaultImage : image}
         alt={name}
         className="h-[10rem] object-contain rounded-md mix-blend-multiply"
+        onError={() => setImgError(true)} // Fallback to default image if loading fails
       />
       <h2 className="text-[1.2rem] font-semibold mt-2">{name}</h2>
       <p className="text-gray-500 text-[0.8rem]">{description || "No description available"}</p>

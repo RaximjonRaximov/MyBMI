@@ -23,6 +23,9 @@ const Filter = ({ onFilterChange, selectedFilter, products }) => {
     })),
   ];
 
+  // Default image path
+  const defaultImage = "/food.png";
+
   return (
     <div className="flex justify-start gap-4 p-4 overflow-x-auto whitespace-nowrap bg-transparent">
       {filters.map((filter) => (
@@ -38,9 +41,21 @@ const Filter = ({ onFilterChange, selectedFilter, products }) => {
               src={filter.image}
               alt={filter.type}
               className="w-12 h-12 rounded-full object-cover"
+              onError={(e) => {
+                e.target.src = defaultImage; // Fallback to default image on error
+              }}
             />
-          ) : (
+          ) : filter.icon ? (
             <span className="text-2xl">{filter.icon}</span>
+          ) : (
+            <img
+              src={defaultImage}
+              alt={filter.type}
+              className="w-12 h-12 rounded-full object-cover"
+              onError={(e) => {
+                console.error(`Failed to load default image: ${defaultImage}`);
+              }}
+            />
           )}
           <span className="text-sm font-medium">{filter.type}</span>
         </button>
