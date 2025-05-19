@@ -104,7 +104,7 @@ const ManageStaff = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div className="max-w-6xl mx-auto p-6 bg-gradient-to-br from-gray-100 to-gray-100 min-h-screen">
       <h1 className="text-3xl font-extrabold text-gray-900 mb-8 text-center tracking-tight">
         Manage Staff
       </h1>
